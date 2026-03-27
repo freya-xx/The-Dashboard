@@ -846,28 +846,13 @@ input[type=range]::-moz-range-thumb {
 // ══════════════════════════════════════
 const STORAGE_KEY = 'medlife_hq_v2';
 const defaultState = {
-  tasks: [
-    { id: 1, text: 'Review Surgery rotation orientation materials', cat: 'med', pri: 'high', done: false, due: '' },
-    { id: 2, text: 'Complete USMLE Step 2 CK practice block', cat: 'med', pri: 'high', done: false, due: '' },
-    { id: 3, text: 'Buy white coat and stethoscope', cat: 'med', pri: 'med', done: true, due: '' },
-    { id: 4, text: 'Pay tuition this month', cat: 'life', pri: 'high', done: false, due: '' },
-    { id: 5, text: 'Call family', cat: 'personal', pri: 'low', done: false, due: '' },
-  ],
-  habits: [
-    { id: 10, name: 'Anki review', cat: 'med', log: [true, true, false, true, true, false, false] },
-    { id: 11, name: 'Exercise / walk', cat: 'health', log: [true, false, true, false, true, false, false] },
-    { id: 12, name: 'Read for pleasure', cat: 'life', log: [false, false, false, true, false, false, false] },
-    { id: 13, name: 'Sleep 7+ hours', cat: 'health', log: [true, true, false, false, true, true, false] },
-  ],
+  tasks: [],
+  habits: [],
   events: [],
   rotations: [],
   procedures: [],
   exams: [],
-  goals: [
-    { id: 20, text: 'Pass all shelf exams', done: false },
-    { id: 21, text: 'Step 2 CK score 240+', done: false },
-    { id: 22, text: 'Complete 50 procedures during clerkship', done: false },
-  ],
+  goals: [],
   studyLog: [],
   studyWeekGoal: 20,
   expenses: [],
@@ -879,7 +864,7 @@ const defaultState = {
 
 let S = { ...defaultState };
 let taskFilter = 'all';
-
+  
 // Initialize Firebase if keys are provided
 let useCloudSync = false;
 let db;
