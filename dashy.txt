@@ -10,6 +10,9 @@
 <link rel="icon" type="image/png" href="dashy.png">
 <link rel="apple-touch-icon" href="dashy.png">
 
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
@@ -474,7 +477,7 @@ input[type=range]::-moz-range-thumb {
 
 <div class="app-shell">
   
-<nav class="sidebar" id="sidebar">
+  <nav class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="logo-mark">
         <img src="dashy.png" alt="MedLife Logo">
@@ -499,21 +502,21 @@ input[type=range]::-moz-range-thumb {
     <div class="nav-item" data-page="finance" onclick="goTo('finance',this)"><span class="nav-icon">💰</span>Budget</div>
 
     <div class="nav-spacer"></div>
-    <div class="sidebar-footer">Data saved locally on your device</div>
+    <div class="sidebar-footer" id="sync-status">Data saved locally on device</div>
   </nav>
   <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
 
   
-<header class="mobile-header">
+  <header class="mobile-header">
     <div class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></div>
     <div class="logo">MedLife HQ</div>
   </header>
 
   
-<main class="main-content">
+  <main class="main-content">
 
     
-<div class="page active" id="page-home">
+    <div class="page active" id="page-home">
       <div class="page-header">
         <div class="page-title">Good <span id="greeting-time">morning</span> 👋</div>
         <div class="page-sub" id="home-quote">You're going to be an incredible doctor.</div>
@@ -541,7 +544,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-rotations">
+    <div class="page" id="page-rotations">
       <div class="page-header">
         <div class="page-title">Clinical Rotations</div>
         <div class="page-sub">3rd year clerkship tracker</div>
@@ -560,7 +563,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-study">
+    <div class="page" id="page-study">
       <div class="page-header">
         <div class="page-title">Study Planner</div>
         <div class="page-sub">Log sessions · track progress · stay consistent</div>
@@ -595,7 +598,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-exams">
+    <div class="page" id="page-exams">
       <div class="page-header">
         <div class="page-title">Exams & Goals</div>
         <div class="page-sub">USMLE · shelf exams · milestones</div>
@@ -616,7 +619,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-schedule">
+    <div class="page" id="page-schedule">
       <div class="page-header">
         <div class="page-title">Today's Schedule</div>
         <div class="page-sub" id="sched-date"></div>
@@ -641,7 +644,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-tasks">
+    <div class="page" id="page-tasks">
       <div class="page-header">
         <div class="page-title">Tasks</div>
         <div class="page-sub">All your to-dos in one place</div>
@@ -665,7 +668,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-habits">
+    <div class="page" id="page-habits">
       <div class="page-header">
         <div class="page-title">Habit Tracker</div>
         <div class="page-sub">7-day view · build consistency</div>
@@ -675,7 +678,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-health">
+    <div class="page" id="page-health">
       <div class="page-header">
         <div class="page-title">Wellbeing</div>
         <div class="page-sub">You can't pour from an empty cup</div>
@@ -709,7 +712,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-finance">
+    <div class="page" id="page-finance">
       <div class="page-header">
         <div class="page-title">Budget Tracker</div>
         <div class="page-sub">Every peso counts</div>
@@ -828,11 +831,20 @@ input[type=range]::-moz-range-thumb {
 <div class="toast" id="toast"></div>
 
 <script>
+ const firebaseConfig = {
+    apiKey: "AIzaSyAz5-yRG-M8t9c4cCBa3n_wq3E-WGxZn_U",
+    authDomain: "dashy-life.firebaseapp.com",
+    projectId: "dashy-life",
+    storageBucket: "dashy-life.firebasestorage.app",
+    messagingSenderId: "914598714505",
+    appId: "1:914598714505:web:b36ecce8a980c1c5affa58",
+    measurementId: "G-38NYZ1M2NS"
+  };
+
 // ══════════════════════════════════════
-// STATE & PERSISTENCE
+// STATE & PERSISTENCE (CLOUD + LOCAL)
 // ══════════════════════════════════════
 const STORAGE_KEY = 'medlife_hq_v2';
-
 const defaultState = {
   tasks: [
     { id: 1, text: 'Review Surgery rotation orientation materials', cat: 'med', pri: 'high', done: false, due: '' },
@@ -865,20 +877,73 @@ const defaultState = {
   taskFilter: 'all',
 };
 
-function loadState() {
+let S = { ...defaultState };
+let taskFilter = 'all';
+
+// Initialize Firebase if keys are provided
+let useCloudSync = false;
+let db;
+
+if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  useCloudSync = true;
+  document.getElementById('sync-status').textContent = '🟢 Synced to Cloud';
+  document.getElementById('sync-status').style.color = 'var(--accent)';
+}
+
+function loadLocalState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return { ...defaultState, ...JSON.parse(raw) };
+    if (raw) S = { ...defaultState, ...JSON.parse(raw) };
   } catch (e) {}
-  return { ...defaultState };
+}
+
+function initData(callback) {
+  if (useCloudSync) {
+    // 1. Fetch initial data from cloud
+    db.ref('medlife_user_data').once('value').then(snapshot => {
+      if (snapshot.exists()) {
+        S = { ...defaultState, ...snapshot.val() };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(S)); // backup locally
+      } else {
+        loadLocalState(); // brand new cloud, use local data instead
+      }
+      callback();
+    }).catch(err => {
+      console.error("Cloud sync failed, using local data.", err);
+      loadLocalState();
+      callback();
+    });
+
+    // 2. Listen for real-time changes from your other devices!
+    db.ref('medlife_user_data').on('value', snapshot => {
+      if (snapshot.exists()) {
+        S = { ...defaultState, ...snapshot.val() };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(S));
+        // Refresh whatever page you are currently looking at
+        const activePage = document.querySelector('.page.active').id.replace('page-', '');
+        renderPage(activePage);
+      }
+    });
+
+  } else {
+    // No cloud keys yet, just use local device storage
+    loadLocalState();
+    callback();
+  }
 }
 
 function saveState() {
+  // Always save locally as a backup
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S)); } catch (e) {}
+  
+  // If cloud is hooked up, push the data there too
+  if (useCloudSync) {
+    db.ref('medlife_user_data').set(S).catch(err => console.error("Save to cloud failed", err));
+  }
 }
 
-let S = loadState();
-let taskFilter = 'all';
 
 // ══════════════════════════════════════
 // UTILITIES
@@ -1366,11 +1431,13 @@ if ('serviceWorker' in navigator) {
 // INIT
 // ══════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  renderHome();
-  // load defaults for study goal input
-  $('s-week-goal').value = S.studyWeekGoal || 20;
-  // Set income input placeholder
-  if (S.income) $('income-input').placeholder = S.income;
+  // We wait to load data from the cloud BEFORE rendering the page!
+  initData(() => {
+    renderHome();
+    $('s-week-goal').value = S.studyWeekGoal || 20;
+    if (S.income) $('income-input').placeholder = S.income;
+  });
+
   // Keyboard shortcut: Escape closes modals
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
