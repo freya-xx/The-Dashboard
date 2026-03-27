@@ -1385,17 +1385,45 @@ function addExpense() {
 function deleteExpense(id) { S.expenses = S.expenses.filter(e => e.id !== id); saveState(); renderFinance(); }
 
 function renderFinance() {
-  const spent = S.expenses.reduce((a, e) => a + e.amount, 0);
-  const left = S.income - spent;
-  $('fin-stats').innerHTML = [
-    { val: formatCurrency(S.income), lbl: 'Monthly allowance', color: 'var(--accent)' },
-    { val: formatCurrency(spent), lbl: 'Total spent', color: 'var(--accent3)' },
-    { val: formatCurrency(left), lbl: 'Remaining', color: left >= 0 ? 'var(--accent)' : 'var(--accent3)' },
-  ].map(s => `<div class="stat-card"><div class="stat-val" style="font-size:20px;color:${s.color}">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
+  const now = new Date();
+  const currentMonth = now.getMonth(); // 0-11
+  const currentYear = now.getFullYear();
 
-  $('expense-list').innerHTML = S.expenses.length
-    ? S.expenses.map(e => `<div class="expense-row"><div class="expense-info"><div class="cat-dot" style="background:${EXP_COLORS[e.cat]||'#888'}"></div><div><div class="expense-name">${e.name}</div><div class="expense-cat">${e.cat} · ${e.date}</div></div></div><div style="display:flex;align-items:center;gap:8px"><div class="expense-amt">-${formatCurrency(e.amount)}</div><button class="del-btn" onclick="deleteExpense(${e.id})">×</button></div></div>`).join('')
-    : '<div class="empty"><div class="empty-icon">💸</div>No expenses logged yet</div>';
+  const monthlyExpenses = S.expenses.filter(e => {
+    const expDate = new Date(e.date);
+    return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+  });
+
+  const spent = monthlyExpenses.reduce((a, e) => a + e.amount, 0);
+  const left = S.income - spent;
+
+  const monthName = now.toLocaleString('default', { month: 'long' });
+  $('fin-stats').innerHTML = [
+    { val: formatCurrency(S.income), lbl: `${monthName} Allowance`, color: 'var(--accent)' },
+    { val: formatCurrency(spent), lbl: `Spent in ${monthName}`, color: 'var(--accent3)' },
+    { val: formatCurrency(left), lbl: 'Remaining', color: left >= 0 ? 'var(--accent)' : 'var(--accent3)' },
+  ].map(s => `
+    <div class="stat-card">
+      <div class="stat-val" style="font-size:20px;color:${s.color}">${s.val}</div>
+      <div class="stat-lbl">${s.lbl}</div>
+    </div>`).join('');
+
+  $('expense-list').innerHTML = monthlyExpenses.length
+    ? monthlyExpenses.map(e => `
+        <div class="expense-row">
+          <div class="expense-info">
+            <div class="cat-dot" style="background:${EXP_COLORS[e.cat]||'#888'}"></div>
+            <div>
+              <div class="expense-name">${e.name}</div>
+              <div class="expense-cat">${e.cat} · ${e.date}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="expense-amt">-${formatCurrency(e.amount)}</div>
+            <button class="del-btn" onclick="deleteExpense(${e.id})">×</button>
+          </div>
+        </div>`).join('')
+    : `<div class="empty"><div class="empty-icon">💸</div>No expenses logged for ${monthName}</div>`;
 }
 
 // ══════════════════════════════════════
