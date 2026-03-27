@@ -547,7 +547,7 @@ input[type=range]::-moz-range-thumb {
     <div class="page" id="page-rotations">
       <div class="page-header">
         <div class="page-title">Clinical Rotations</div>
-        <div class="page-sub">3rd year clerkship tracker</div>
+        <div class="page-sub">4th year clerkship tracker</div>
       </div>
       <div class="grid-3" id="rot-stats"></div>
       <div class="card">
@@ -1051,7 +1051,6 @@ function renderHome() {
   $('home-stats').innerHTML = [
     { val: `${doneTasks}/${S.tasks.length}`, lbl: 'Tasks done', color: 'var(--accent)' },
     { val: `${doneHabits}/${S.habits.length}`, lbl: 'Habits tracked', color: 'var(--accent4)' },
-    { val: daysLeft + 'd', lbl: 'Days to clerkship', color: 'var(--accent2)' },
     { val: totalStudyH.toFixed(1) + 'h', lbl: 'Study hrs logged', color: 'var(--accent3)' },
   ].map(s => `<div class="stat-card"><div class="stat-val" style="color:${s.color}">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
 
