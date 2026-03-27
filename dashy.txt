@@ -832,13 +832,13 @@ input[type=range]::-moz-range-thumb {
 
 <script>
  const firebaseConfig = {
-    apiKey: "AIzaSyAz5-yRG-M8t9c4cCBa3n_wq3E-WGxZn_U",
-    authDomain: "dashy-life.firebaseapp.com",
-    projectId: "dashy-life",
-    storageBucket: "dashy-life.firebasestorage.app",
-    messagingSenderId: "914598714505",
-    appId: "1:914598714505:web:b36ecce8a980c1c5affa58",
-    measurementId: "G-38NYZ1M2NS"
+    apiKey: "AIzaSyB7YuEc4-_sKTkeioUDMCUk3CtdS4OzF88",
+    authDomain: "dashy-lifee.firebaseapp.com",
+    projectId: "dashy-lifee",
+    storageBucket: "dashy-lifee.firebasestorage.app",
+    messagingSenderId: "210106054083",
+    appId: "1:210106054083:web:6f09eccc206f21130c7976",
+    measurementId: "G-JF1PKKRKX1"
   };
 
 // ══════════════════════════════════════
