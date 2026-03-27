@@ -1,9 +1,9 @@
-const CACHE_NAME = 'medlife-cache-v4';
+const CACHE_NAME = 'medlife-cache-v3';
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
-  './image_8687e7.png'
+  './dashy.png'
 ];
 
 // Install the service worker and cache the files
