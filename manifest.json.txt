@@ -1,0 +1,23 @@
+{
+  "name": "MedLife HQ",
+  "short_name": "MedLife",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f2ec",
+  "theme_color": "#1D9E75",
+  "description": "Dashboard for organizing medical student life",
+  "icons": [
+    {
+      "src": "dashy.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "dashy.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

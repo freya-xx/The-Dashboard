@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedLife HQ</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f4f2ec">
+<link rel="icon" type="image/png" href="dashy.png">
+<link rel="apple-touch-icon" href="dashy.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: #f4f2ec;
+  color: #1a1a18;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+:root {
+  --syne: 'Syne', sans-serif;
+  --dm: 'DM Sans', sans-serif;
+  --bg: #f4f2ec;
+  --sidebar-bg: #eceae2;
+  --card: #ffffff;
+  --border: rgba(30,30,20,0.12);
+  --border-strong: rgba(30,30,20,0.22);
+  --text: #1a1a18;
+  --muted: #6b6b60;
+  --hint: #a0a090;
+  --accent: #1D9E75;
+  --accent-light: #E1F5EE;
+  --accent2: #378ADD;
+  --accent2-light: #E6F1FB;
+  --accent3: #D85A30;
+  --accent3-light: #FAECE7;
+  --accent4: #7F77DD;
+  --accent4-light: #EEEDFE;
+  --warn: #BA7517;
+  --warn-light: #FAEEDA;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --sidebar-w: 240px;
+  --header-h: 60px;
+}
+
+/* ─── Dark Mode ─── */
+@media (prefers-color-scheme: dark) {
+  body { background: #16160f; color: #e8e6dc; }
+  :root {
+    --bg: #16160f;
+    --sidebar-bg: #1e1e16;
+    --card: #242420;
+    --border: rgba(255,255,240,0.1);
+    --border-strong: rgba(255,255,240,0.2);
+    --text: #e8e6dc;
+    --muted: #9a9880;
+    --hint: #6a6850;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    --accent-light: #0a3d2a;
+    --accent2-light: #0c2a45;
+    --accent3-light: #3d1a0c;
+    --accent4-light: #22204a;
+    --warn-light: #3a2500;
+  }
+}
+
+/* ─── Layout ─── */
+.app-shell { display: flex; height: 100vh; overflow: hidden; }
+
+/* ─── Mobile Header ─── */
+.mobile-header {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--sidebar-bg);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  padding: 0 1rem;
+  gap: 12px;
+  z-index: 200;
+}
+.mobile-header .logo { font-family: var(--syne); font-size: 18px; font-weight: 700; flex: 1; }
+.hamburger {
+  width: 36px; height: 36px; border: 1px solid var(--border);
+  border-radius: var(--radius); background: var(--card);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; flex-shrink: 0;
+}
+.hamburger span { width: 16px; height: 1.5px; background: var(--text); border-radius: 2px; transition: all .2s; }
+
+/* ─── Sidebar ─── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 1.5rem 0.75rem 1rem;
+  overflow-y: auto;
+  flex-shrink: 0;
+  transition: transform .25s ease;
+  z-index: 150;
+}
+.sidebar-logo {
+  font-family: var(--syne); font-size: 18px; font-weight: 800;
+  padding: 0 0.75rem 1.5rem;
+  display: flex; align-items: center; gap: 10px; color: var(--text);
+}
+.logo-mark {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.logo-mark img { width: 100%; height: 100%; object-fit: contain; }
+.nav-section {
+  font-size: 10px; font-family: var(--syne); font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--hint); padding: 1rem 0.75rem 0.4rem;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: var(--radius);
+  cursor: pointer; font-size: 13.5px; color: var(--muted);
+  transition: all .15s; text-decoration: none;
+  border: 1px solid transparent;
+  font-family: var(--dm);
+  user-select: none;
+}
+.nav-item:hover { background: var(--card); color: var(--text); }
+.nav-item.active {
+  background: var(--card); color: var(--text); font-weight: 500;
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+.nav-icon { width: 20px; text-align: center; font-size: 14px; flex-shrink: 0; }
+.nav-spacer { flex: 1; }
+.sidebar-footer {
+  padding: 0.75rem;
+  font-size: 11px; color: var(--hint); text-align: center;
+  border-top: 1px solid var(--border); margin-top: 0.5rem;
+}
+
+/* ─── Main Content ─── */
+.main-content {
+  flex: 1; overflow-y: auto;
+  padding: 2rem;
+  background: var(--bg);
+}
+.page { display: none; animation: fadeIn .2s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ─── Page Header ─── */
+.page-header { margin-bottom: 1.75rem; }
+.page-title { font-family: var(--syne); font-size: 26px; font-weight: 800; line-height: 1.2; }
+.page-sub { font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+.date-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 4px 12px;
+  font-size: 12px; color: var(--muted); margin-top: 8px;
+  box-shadow: var(--shadow);
+}
+.date-badge strong { color: var(--text); }
+
+/* ─── Cards ─── */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow);
+}
+.card + .card { margin-top: 12px; }
+.card-title {
+  font-family: var(--syne); font-size: 11px; font-weight: 700;
+  color: var(--hint); text-transform: uppercase; letter-spacing: .08em;
+  margin-bottom: 1rem;
+}
+.card-title-lg {
+  font-family: var(--syne); font-size: 15px; font-weight: 700;
+  color: var(--text); margin-bottom: 0.75rem;
+}
+
+/* ─── Grids ─── */
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; margin-bottom: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-bottom: 12px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 12px; }
+
+/* ─── Stat Cards ─── */
+.stat-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.25rem;
+  box-shadow: var(--shadow); text-align: center;
+}
+.stat-val { font-family: var(--syne); font-size: 28px; font-weight: 800; line-height: 1; }
+.stat-lbl { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+
+/* ─── Badges ─── */
+.badge {
+  display: inline-block; font-size: 10.5px; padding: 2px 8px;
+  border-radius: 20px; font-weight: 500; white-space: nowrap;
+}
+.badge-green { background: var(--accent-light); color: #0F6E56; }
+.badge-blue { background: var(--accent2-light); color: #185FA5; }
+.badge-purple { background: var(--accent4-light); color: #534AB7; }
+.badge-amber { background: var(--warn-light); color: #854F0B; }
+.badge-red { background: #FCEBEB; color: #A32D2D; }
+.badge-teal { background: var(--accent-light); color: #085041; }
+@media (prefers-color-scheme: dark) {
+  .badge-green { background: #0a3d2a; color: #5DCAA5; }
+  .badge-blue { background: #0c2a45; color: #85B7EB; }
+  .badge-purple { background: #22204a; color: #AFA9EC; }
+  .badge-amber { background: #3a2500; color: #EF9F27; }
+  .badge-red { background: #3d1010; color: #F09595; }
+  .badge-teal { background: #0a3020; color: #5DCAA5; }
+}
+
+/* ─── Progress Bar ─── */
+.progress-wrap { background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; margin-top: 6px; }
+.progress-fill { height: 100%; border-radius: 4px; transition: width .4s ease; }
+
+/* ─── Task Items ─── */
+.task-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid var(--border);
+}
+.task-item:last-child { border-bottom: none; padding-bottom: 0; }
+.task-check {
+  width: 18px; height: 18px; border: 1.5px solid var(--border-strong);
+  border-radius: 5px; flex-shrink: 0; cursor: pointer; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.task-check:hover { border-color: var(--accent); }
+.task-check.done { background: var(--accent); border-color: var(--accent); }
+.task-check.done::after { content: '✓'; color: white; font-size: 11px; font-weight: 700; }
+.task-text { flex: 1; font-size: 13.5px; line-height: 1.5; }
+.task-text.done { text-decoration: line-through; color: var(--muted); }
+.task-meta { font-size: 11px; color: var(--hint); margin-top: 2px; }
+.task-actions { display: flex; align-items: center; gap: 4px; }
+.del-btn {
+  width: 22px; height: 22px; border: none; background: none;
+  color: var(--hint); cursor: pointer; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; transition: all .15s; padding: 0;
+}
+.del-btn:hover { background: #FCEBEB; color: #A32D2D; }
+
+/* ─── Form Elements ─── */
+input[type=text], input[type=number], input[type=date], input[type=time], input[type=email], select, textarea {
+  width: 100%; font-size: 13.5px; padding: 9px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg); color: var(--text); font-family: var(--dm);
+  transition: border-color .15s, box-shadow .15s;
+  outline: none;
+  -webkit-appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(55,138,221,0.1);
+}
+textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+label { font-size: 12.5px; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 500; }
+
+.form-group { margin-bottom: 12px; }
+.form-row { display: flex; gap: 8px; }
+.form-row > * { flex: 1; }
+
+.btn {
+  padding: 9px 18px; border-radius: var(--radius); font-size: 13.5px;
+  cursor: pointer; font-family: var(--dm); font-weight: 500;
+  transition: all .15s; border: 1px solid transparent;
+  display: inline-flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-primary:hover { background: #178f68; }
+.btn-secondary { background: var(--card); color: var(--text); border-color: var(--border); }
+.btn-secondary:hover { background: var(--bg); }
+.btn-danger { background: #FCEBEB; color: #A32D2D; border-color: transparent; }
+.btn-danger:hover { background: #F7C1C1; }
+.btn-sm { padding: 6px 12px; font-size: 12.5px; }
+.btn-icon { padding: 8px; min-width: unset; }
+
+.add-row { display: flex; align-items: center; gap: 8px; padding: 10px 0; color: var(--muted); font-size: 13px; cursor: pointer; border: none; background: none; font-family: var(--dm); transition: color .15s; }
+.add-row:hover { color: var(--text); }
+.add-row::before { content: '+'; font-size: 18px; font-weight: 300; line-height: 1; }
+
+/* ─── Tabs ─── */
+.tab-bar { display: flex; gap: 3px; background: var(--sidebar-bg); padding: 4px; border-radius: var(--radius); margin-bottom: 1rem; border: 1px solid var(--border); }
+.tab { flex: 1; text-align: center; padding: 7px 10px; border-radius: 7px; font-size: 13px; cursor: pointer; color: var(--muted); transition: all .15s; font-family: var(--dm); border: 1px solid transparent; user-select: none; }
+.tab:hover { color: var(--text); }
+.tab.active { background: var(--card); color: var(--text); font-weight: 500; border-color: var(--border); box-shadow: var(--shadow); }
+
+/* ─── Schedule ─── */
+.schedule-block {
+  display: grid; grid-template-columns: 72px 1fr; gap: 8px;
+  align-items: start; margin-bottom: 6px;
+}
+.sched-time { font-size: 11.5px; color: var(--muted); font-family: var(--syne); font-weight: 600; padding-top: 9px; }
+.sched-event {
+  padding: 8px 14px; border-radius: var(--radius);
+  font-size: 13.5px; display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+}
+.sched-event.clin { background: var(--accent-light); color: #085041; }
+.sched-event.study { background: var(--accent2-light); color: #0C447C; }
+.sched-event.life { background: var(--warn-light); color: #633806; }
+.sched-event.personal { background: var(--accent4-light); color: #3C3489; }
+@media (prefers-color-scheme: dark) {
+  .sched-event.clin { background: #0a3020; color: #5DCAA5; }
+  .sched-event.study { background: #0c2233; color: #85B7EB; }
+  .sched-event.life { background: #3a2500; color: #EF9F27; }
+  .sched-event.personal { background: #1a1838; color: #AFA9EC; }
+}
+
+/* ─── Habits ─── */
+.habit-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 10px; box-shadow: var(--shadow); }
+.habit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.habit-name { font-size: 14px; font-weight: 500; }
+.day-labels { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+.day-lbl { font-size: 10px; color: var(--hint); text-align: center; }
+.dot-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.habit-dot { aspect-ratio: 1; border-radius: 4px; background: var(--bg); border: 1px solid var(--border); cursor: pointer; transition: all .15s; }
+.habit-dot:hover { border-color: var(--accent); }
+.habit-dot.done { background: var(--accent); border-color: var(--accent); }
+.habit-dot.done:hover { background: #178f68; }
+
+/* ─── Rotation blocks ─── */
+.rot-block {
+  border-left: 3px solid var(--accent);
+  background: var(--bg); border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 10px 14px; margin-bottom: 8px;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px;
+}
+.rot-name { font-weight: 500; font-size: 14px; }
+.rot-dates { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ─── Finance ─── */
+.expense-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0; border-bottom: 1px solid var(--border);
+}
+.expense-row:last-child { border-bottom: none; }
+.expense-info { display: flex; align-items: center; gap: 8px; }
+.cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.expense-name { font-size: 13.5px; }
+.expense-cat { font-size: 11px; color: var(--hint); }
+.expense-amt { font-family: var(--syne); font-weight: 700; font-size: 14px; color: var(--accent3); }
+
+/* ─── Wellbeing Sliders ─── */
+.wb-row { margin-bottom: 14px; }
+.wb-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.wb-label span { font-size: 13.5px; font-weight: 500; }
+.wb-label em { font-size: 12px; color: var(--muted); font-style: normal; }
+input[type=range] {
+  width: 100%; height: 4px; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  background: var(--border); border-radius: 4px; outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px;
+  border-radius: 50%; background: var(--accent2);
+  box-shadow: 0 1px 3px rgba(0,0,0,.2); cursor: pointer;
+}
+input[type=range]::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%; background: var(--accent2);
+  border: none; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+
+/* ─── Modal ─── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.4); backdrop-filter: blur(2px);
+  z-index: 500; align-items: center; justify-content: center; padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--card); border-radius: var(--radius-lg);
+  padding: 1.75rem; width: 100%; max-width: 420px;
+  border: 1px solid var(--border); box-shadow: var(--shadow-md);
+  animation: slideUp .2s ease;
+  max-height: 90vh; overflow-y: auto;
+}
+@keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+.modal-title { font-family: var(--syne); font-size: 17px; font-weight: 700; }
+.modal-close { background: none; border: none; font-size: 20px; color: var(--muted); cursor: pointer; padding: 4px; line-height: 1; border-radius: 6px; }
+.modal-close:hover { background: var(--bg); color: var(--text); }
+.modal-footer { display: flex; gap: 8px; margin-top: 1.25rem; }
+.modal-footer .btn { flex: 1; justify-content: center; }
+
+/* ─── Exam countdown ─── */
+.exam-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.exam-item:last-child { border-bottom: none; }
+.exam-name { font-size: 14px; font-weight: 500; }
+.exam-meta { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.exam-right { text-align: right; flex-shrink: 0; }
+.days-badge {
+  font-family: var(--syne); font-size: 18px; font-weight: 800;
+  display: block;
+}
+
+/* ─── Quick blocks ─── */
+.quick-block-btn {
+  padding: 6px 14px; border-radius: 20px; font-size: 12.5px;
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--muted); cursor: pointer; font-family: var(--dm);
+  transition: all .15s;
+}
+.quick-block-btn:hover { background: var(--accent-light); color: #085041; border-color: var(--accent); }
+
+/* ─── Toast ─── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: #1a1a18; color: #f4f2ec;
+  padding: 12px 20px; border-radius: var(--radius);
+  font-size: 13.5px; font-family: var(--dm);
+  box-shadow: var(--shadow-md); z-index: 900;
+  transform: translateY(80px); opacity: 0;
+  transition: all .3s ease;
+  pointer-events: none;
+}
+.toast.show { transform: none; opacity: 1; }
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--hint); }
+
+/* ─── Empty State ─── */
+.empty { text-align: center; padding: 2.5rem 1rem; color: var(--hint); font-size: 13.5px; }
+.empty-icon { font-size: 32px; margin-bottom: 8px; opacity: .5; }
+
+/* ─── Overlay for mobile sidebar ─── */
+.sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 140; }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .mobile-header { display: flex; }
+  .sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); }
+  .sidebar.open { transform: none; }
+  .sidebar-backdrop.open { display: block; }
+  .main-content { padding: 1rem; padding-top: calc(var(--header-h) + 1rem); }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .app-shell { display: block; }
+}
+
+/* ─── Print styles ─── */
+@media print {
+  .sidebar, .mobile-header, .toast, .modal-overlay { display: none !important; }
+  .main-content { padding: 0; }
+  .page { display: block !important; margin-bottom: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <img src="dashy.png" alt="MedLife Logo">
+      </div>
+      MedLife HQ
+    </div>
+
+    <div class="nav-item active" data-page="home" onclick="goTo('home',this)"><span class="nav-icon">🏠</span>Overview</div>
+
+    <div class="nav-section">Medical School</div>
+    <div class="nav-item" data-page="rotations" onclick="goTo('rotations',this)"><span class="nav-icon">⚕️</span>Rotations</div>
+    <div class="nav-item" data-page="study" onclick="goTo('study',this)"><span class="nav-icon">📖</span>Study Planner</div>
+    <div class="nav-item" data-page="exams" onclick="goTo('exams',this)"><span class="nav-icon">📋</span>Exams & Goals</div>
+
+    <div class="nav-section">Daily Life</div>
+    <div class="nav-item" data-page="schedule" onclick="goTo('schedule',this)"><span class="nav-icon">📅</span>Schedule</div>
+    <div class="nav-item" data-page="tasks" onclick="goTo('tasks',this)"><span class="nav-icon">✅</span>Tasks</div>
+    <div class="nav-item" data-page="habits" onclick="goTo('habits',this)"><span class="nav-icon">💎</span>Habits</div>
+
+    <div class="nav-section">Wellness</div>
+    <div class="nav-item" data-page="health" onclick="goTo('health',this)"><span class="nav-icon">❤️</span>Wellbeing</div>
+    <div class="nav-item" data-page="finance" onclick="goTo('finance',this)"><span class="nav-icon">💰</span>Budget</div>
+
+    <div class="nav-spacer"></div>
+    <div class="sidebar-footer">Data saved locally on your device</div>
+  </nav>
+  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
+
+  
+<header class="mobile-header">
+    <div class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></div>
+    <div class="logo">MedLife HQ</div>
+  </header>
+
+  
+<main class="main-content">
+
+    
+<div class="page active" id="page-home">
+      <div class="page-header">
+        <div class="page-title">Good <span id="greeting-time">morning</span> 👋</div>
+        <div class="page-sub" id="home-quote">You're going to be an incredible doctor.</div>
+        <div class="date-badge"><strong id="home-date-str"></strong></div>
+      </div>
+
+      <div class="grid-4" id="home-stats"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Upcoming tasks</div>
+          <div id="home-tasks"></div>
+          <button class="add-row" onclick="goTo('tasks',document.querySelector('[data-page=tasks]'))">View all tasks</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Today's events</div>
+          <div id="home-events"></div>
+          <button class="add-row" onclick="goTo('schedule',document.querySelector('[data-page=schedule]'))">View full schedule</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Weekly study goal</div>
+        <div id="home-study-goal-text" style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"></div>
+        <div class="progress-wrap"><div class="progress-fill" id="home-study-bar" style="background:var(--accent4)"></div></div>
+      </div>
+    </div>
+
+    
+<div class="page" id="page-rotations">
+      <div class="page-header">
+        <div class="page-title">Clinical Rotations</div>
+        <div class="page-sub">3rd year clerkship tracker</div>
+      </div>
+      <div class="grid-3" id="rot-stats"></div>
+      <div class="card">
+        <div class="card-title">Rotation schedule</div>
+        <div id="rot-list"></div>
+        <button class="add-row" onclick="openModal('rot-modal')">Add rotation</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Procedures & experiences log</div>
+        <div id="proc-list"></div>
+        <button class="add-row" onclick="openModal('proc-modal')">Log procedure / experience</button>
+      </div>
+    </div>
+
+    
+<div class="page" id="page-study">
+      <div class="page-header">
+        <div class="page-title">Study Planner</div>
+        <div class="page-sub">Log sessions · track progress · stay consistent</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Log a study session</div>
+          <div class="form-group"><label>Topic</label><input type="text" id="s-topic" placeholder="e.g. Cardiology — Heart Failure"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Hours</label><input type="number" id="s-hours" min="0.25" max="12" step="0.25" placeholder="2.5"></div>
+            <div class="form-group"><label>Type</label>
+              <select id="s-type"><option>Lectures</option><option>Anki</option><option>Question bank</option><option>Textbook reading</option><option>Group study</option><option>Clinical review</option></select>
+            </div>
+          </div>
+          <div class="form-group"><label>Weekly goal (hours)</label><input type="number" id="s-week-goal" placeholder="20" min="1" max="80"></div>
+          <button class="btn btn-primary" onclick="logStudy()" style="width:100%">Log session</button>
+        </div>
+        <div class="card">
+          <div class="card-title">This week's breakdown</div>
+          <div id="study-breakdown"></div>
+          <div style="margin-top:1rem">
+            <div class="card-title">Weekly goal progress</div>
+            <div id="study-goal-label" style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"></div>
+            <div class="progress-wrap"><div class="progress-fill" id="study-goal-bar2" style="background:var(--accent4)"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Study session history</div>
+        <div id="study-log"></div>
+      </div>
+    </div>
+
+    
+<div class="page" id="page-exams">
+      <div class="page-header">
+        <div class="page-title">Exams & Goals</div>
+        <div class="page-sub">USMLE · shelf exams · milestones</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Upcoming exams & milestones</div>
+        <div id="exam-list"></div>
+        <button class="add-row" onclick="openModal('exam-modal')">Add exam or milestone</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Goals</div>
+        <div id="goals-list"></div>
+        <div class="form-row" style="margin-top:10px">
+          <input type="text" id="goal-input" placeholder="Add a goal...">
+          <button class="btn btn-primary btn-sm" onclick="addGoal()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    
+<div class="page" id="page-schedule">
+      <div class="page-header">
+        <div class="page-title">Today's Schedule</div>
+        <div class="page-sub" id="sched-date"></div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-title">Quick blocks</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="quick-block-btn" onclick="quickAdd('Morning rounds','07:00','09:00','clin')">Morning rounds</button>
+          <button class="quick-block-btn" onclick="quickAdd('Anki review','09:00','10:00','study')">Anki review</button>
+          <button class="quick-block-btn" onclick="quickAdd('Lunch break','12:00','13:00','life')">Lunch break</button>
+          <button class="quick-block-btn" onclick="quickAdd('Study block','14:00','17:00','study')">Study block</button>
+          <button class="quick-block-btn" onclick="quickAdd('Physical exam practice','09:00','11:00','clin')">PE practice</button>
+          <button class="quick-block-btn" onclick="quickAdd('Exercise','17:00','18:00','personal')">Exercise</button>
+          <button class="quick-block-btn" onclick="quickAdd('Sleep','22:00','06:00','personal')">Sleep</button>
+        </div>
+        <button class="add-row" onclick="openModal('event-modal')">Add custom event</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Schedule for today</div>
+        <div id="schedule-list"></div>
+      </div>
+    </div>
+
+    
+<div class="page" id="page-tasks">
+      <div class="page-header">
+        <div class="page-title">Tasks</div>
+        <div class="page-sub">All your to-dos in one place</div>
+      </div>
+      <div class="tab-bar">
+        <div class="tab active" onclick="filterTasks('all',this)">All</div>
+        <div class="tab" onclick="filterTasks('med',this)">Med School</div>
+        <div class="tab" onclick="filterTasks('life',this)">Life</div>
+        <div class="tab" onclick="filterTasks('personal',this)">Personal</div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="form-group"><input type="text" id="task-input" placeholder="New task..." onkeydown="if(event.key==='Enter')addTask()"></div>
+        <div class="form-row">
+          <select id="task-cat"><option value="med">Med School</option><option value="life">Life</option><option value="personal">Personal</option></select>
+          <select id="task-pri"><option value="high">High priority</option><option value="med">Medium</option><option value="low">Low</option></select>
+          <input type="date" id="task-due">
+          <button class="btn btn-primary btn-sm" onclick="addTask()">Add</button>
+        </div>
+      </div>
+      <div id="tasks-list"></div>
+    </div>
+
+    
+<div class="page" id="page-habits">
+      <div class="page-header">
+        <div class="page-title">Habit Tracker</div>
+        <div class="page-sub">7-day view · build consistency</div>
+      </div>
+      <div id="habits-list"></div>
+      <button class="add-row" onclick="openModal('habit-modal')">Add new habit</button>
+    </div>
+
+    
+<div class="page" id="page-health">
+      <div class="page-header">
+        <div class="page-title">Wellbeing</div>
+        <div class="page-sub">You can't pour from an empty cup</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Today's check-in</div>
+          <div class="wb-row"><div class="wb-label"><span>Energy level</span><em id="e-val">5/10</em></div><input type="range" min="1" max="10" value="5" id="e-slider" oninput="updWB(this,'e-val');saveWB()"></div>
+          <div class="wb-row"><div class="wb-label"><span>Stress level</span><em id="s-val">5/10</em></div><input type="range" min="1" max="10" value="5" id="s-slider" oninput="updWB(this,'s-val');saveWB()"></div>
+          <div class="wb-row"><div class="wb-label"><span>Sleep quality</span><em id="sl-val">5/10</em></div><input type="range" min="1" max="10" value="5" id="sl-slider" oninput="updWB(this,'sl-val');saveWB()"></div>
+          <div class="wb-row"><div class="wb-label"><span>Mood</span><em id="m-val">5/10</em></div><input type="range" min="1" max="10" value="5" id="m-slider" oninput="updWB(this,'m-val');saveWB()"></div>
+          <div style="margin-top:1rem">
+            <div class="card-title">Self-care reminder</div>
+            <div id="care-tip" style="font-size:13.5px;padding:10px;background:var(--accent-light);border-radius:var(--radius);color:#0F6E56;line-height:1.6"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Journal / notes</div>
+          <textarea id="journal-text" placeholder="How are you feeling today? Reflect, vent, plan...&#10;&#10;This is just for you." style="min-height:160px"></textarea>
+          <button class="btn btn-primary btn-sm" onclick="saveJournal()" style="margin-top:8px">Save entry</button>
+          <div style="margin-top:1rem">
+            <div class="card-title">Past entries</div>
+            <div id="journal-list"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Wellbeing trends — last 7 check-ins</div>
+        <div id="wb-history"></div>
+      </div>
+    </div>
+
+    
+<div class="page" id="page-finance">
+      <div class="page-header">
+        <div class="page-title">Budget Tracker</div>
+        <div class="page-sub">Every peso counts</div>
+      </div>
+      <div class="grid-3" id="fin-stats"></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Set monthly income / allowance</div>
+          <div class="form-row" style="margin-bottom:1rem">
+            <input type="number" id="income-input" placeholder="Monthly amount (₱)">
+            <button class="btn btn-secondary btn-sm" onclick="setIncome()">Set</button>
+          </div>
+          <div class="card-title">Add expense</div>
+          <div class="form-group"><label>Description</label><input type="text" id="exp-name" placeholder="e.g. Pares at the canteen"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Amount (₱)</label><input type="number" id="exp-amt" placeholder="0" min="0"></div>
+            <div class="form-group"><label>Category</label>
+              <select id="exp-cat"><option>Food</option><option>Transport</option><option>Books / Materials</option><option>Rent</option><option>Health</option><option>Entertainment</option><option>Other</option></select>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addExpense()" style="width:100%">Add expense</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Expenses this month</div>
+          <div id="expense-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="modal-overlay" id="rot-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add rotation</div><button class="modal-close" onclick="closeModal('rot-modal')">×</button></div>
+    <div class="form-group"><label>Rotation name</label><input type="text" id="r-name" placeholder="e.g. Internal Medicine"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Start date</label><input type="date" id="r-start"></div>
+      <div class="form-group"><label>End date</label><input type="date" id="r-end"></div>
+    </div>
+    <div class="form-group"><label>Type</label>
+      <select id="r-type"><option value="clin">Clinical</option><option value="study">Academic</option><option value="life">Community</option></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('rot-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addRotation()">Save rotation</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="proc-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Log procedure / experience</div><button class="modal-close" onclick="closeModal('proc-modal')">×</button></div>
+    <div class="form-group"><label>Procedure name</label><input type="text" id="p-name" placeholder="e.g. IV insertion, history taking..."></div>
+    <div class="form-group"><label>Level of involvement</label>
+      <select id="p-level"><option>Observed</option><option>Assisted</option><option>Performed under supervision</option><option>Performed independently</option></select>
+    </div>
+    <div class="form-group"><label>Notes (optional)</label><textarea id="p-notes" placeholder="Patient context, learnings, reflections..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('proc-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addProc()">Log it</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="exam-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add exam / milestone</div><button class="modal-close" onclick="closeModal('exam-modal')">×</button></div>
+    <div class="form-group"><label>Name</label><input type="text" id="ex-name" placeholder="e.g. NBME Surgery Shelf, Step 2 CK"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="ex-date"></div>
+      <div class="form-group"><label>Type</label>
+        <select id="ex-type"><option>Shelf exam</option><option>USMLE Step</option><option>School exam</option><option>Milestone</option><option>Other</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Target score (optional)</label><input type="text" id="ex-target" placeholder="e.g. 240+"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('exam-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addExam()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="event-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add schedule block</div><button class="modal-close" onclick="closeModal('event-modal')">×</button></div>
+    <div class="form-group"><label>Event name</label><input type="text" id="ev-name" placeholder="e.g. Cardiology lecture"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Start time</label><input type="time" id="ev-start"></div>
+      <div class="form-group"><label>End time</label><input type="time" id="ev-end"></div>
+    </div>
+    <div class="form-group"><label>Type</label>
+      <select id="ev-type"><option value="clin">Clinical</option><option value="study">Study</option><option value="life">Personal / Life</option><option value="personal">Self-care</option></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('event-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addEvent()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="habit-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add habit</div><button class="modal-close" onclick="closeModal('habit-modal')">×</button></div>
+    <div class="form-group"><label>Habit name</label><input type="text" id="h-name" placeholder="e.g. Anki 30 min, Exercise, Read"></div>
+    <div class="form-group"><label>Category</label>
+      <select id="h-cat"><option value="med">Med School</option><option value="health">Health</option><option value="life">Life</option></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('habit-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addHabit()">Add habit</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// STATE & PERSISTENCE
+// ══════════════════════════════════════
+const STORAGE_KEY = 'medlife_hq_v2';
+
+const defaultState = {
+  tasks: [
+    { id: 1, text: 'Review Surgery rotation orientation materials', cat: 'med', pri: 'high', done: false, due: '' },
+    { id: 2, text: 'Complete USMLE Step 2 CK practice block', cat: 'med', pri: 'high', done: false, due: '' },
+    { id: 3, text: 'Buy white coat and stethoscope', cat: 'med', pri: 'med', done: true, due: '' },
+    { id: 4, text: 'Pay tuition this month', cat: 'life', pri: 'high', done: false, due: '' },
+    { id: 5, text: 'Call family', cat: 'personal', pri: 'low', done: false, due: '' },
+  ],
+  habits: [
+    { id: 10, name: 'Anki review', cat: 'med', log: [true, true, false, true, true, false, false] },
+    { id: 11, name: 'Exercise / walk', cat: 'health', log: [true, false, true, false, true, false, false] },
+    { id: 12, name: 'Read for pleasure', cat: 'life', log: [false, false, false, true, false, false, false] },
+    { id: 13, name: 'Sleep 7+ hours', cat: 'health', log: [true, true, false, false, true, true, false] },
+  ],
+  events: [],
+  rotations: [],
+  procedures: [],
+  exams: [],
+  goals: [
+    { id: 20, text: 'Pass all shelf exams', done: false },
+    { id: 21, text: 'Step 2 CK score 240+', done: false },
+    { id: 22, text: 'Complete 50 procedures during clerkship', done: false },
+  ],
+  studyLog: [],
+  studyWeekGoal: 20,
+  expenses: [],
+  income: 0,
+  wellbeingLog: [],
+  journals: [],
+  taskFilter: 'all',
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return { ...defaultState, ...JSON.parse(raw) };
+  } catch (e) {}
+  return { ...defaultState };
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(S)); } catch (e) {}
+}
+
+let S = loadState();
+let taskFilter = 'all';
+
+// ══════════════════════════════════════
+// UTILITIES
+// ══════════════════════════════════════
+const $ = id => document.getElementById(id);
+const today = new Date();
+const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const CAT_COLORS = { med:'blue', life:'amber', personal:'purple', health:'green' };
+const EXP_COLORS = { Food:'#1D9E75', Transport:'#378ADD', 'Books / Materials':'#7F77DD', Rent:'#D85A30', Health:'#0F6E56', Entertainment:'#BA7517', Other:'#888780' };
+const CARE_TIPS = [
+  'Drink at least 8 glasses of water today.',
+  'Take a 5-minute break every 45 minutes. Your brain needs it.',
+  'Message a friend or family member today.',
+  'Go outside for at least 10 minutes.',
+  'Practice 3 deep breaths before your next clinical encounter.',
+  'Eat a real meal — not just hospital canteen coffee.',
+  'It\'s okay to not know everything yet. You\'re still learning.',
+  'Celebrate a small win from today, no matter how minor.',
+  'Your mental health matters as much as your grades.',
+  'You are more than your shelf exam scores.',
+];
+const QUOTES = [
+  'You\'re going to be an incredible doctor.',
+  'One rotation at a time.',
+  'Progress, not perfection.',
+  'Rest is part of the process.',
+  'You chose medicine. You\'ve got this.',
+  'Small steps every single day.',
+  'Clerkship is the beginning of who you\'ll become.',
+];
+
+function uid() { return Date.now() + Math.floor(Math.random() * 1000); }
+
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function formatCurrency(n) {
+  return '₱' + Number(n).toLocaleString('en-PH', { minimumFractionDigits: 0 });
+}
+
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  const diff = Math.ceil((d - today) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+function greeting() {
+  const h = today.getHours();
+  if (h < 12) return 'morning';
+  if (h < 18) return 'afternoon';
+  return 'evening';
+}
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+function goTo(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  $('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  closeSidebar();
+  renderPage(id);
+}
+
+function renderPage(id) {
+  const renders = {
+    home: renderHome,
+    rotations: renderRotations,
+    study: renderStudy,
+    exams: renderExams,
+    schedule: renderSchedule,
+    tasks: () => renderTasks(taskFilter),
+    habits: renderHabits,
+    health: renderHealth,
+    finance: renderFinance,
+  };
+  if (renders[id]) renders[id]();
+}
+
+function toggleSidebar() {
+  $('sidebar').classList.toggle('open');
+  $('sidebar-backdrop').classList.toggle('open');
+}
+function closeSidebar() {
+  $('sidebar').classList.remove('open');
+  $('sidebar-backdrop').classList.remove('open');
+}
+
+// ══════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════
+function openModal(id) {
+  $(id).classList.add('open');
+}
+function closeModal(id) {
+  $(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ══════════════════════════════════════
+// HOME
+// ══════════════════════════════════════
+function renderHome() {
+  $('greeting-time').textContent = greeting();
+  $('home-quote').textContent = QUOTES[today.getDay() % QUOTES.length];
+  $('home-date-str').textContent = today.toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  const doneTasks = S.tasks.filter(t => t.done).length;
+  const doneHabits = S.habits.filter(h => h.log && h.log[6]).length;
+  const totalStudyH = S.studyLog.reduce((a, s) => a + (parseFloat(s.hours) || 0), 0);
+  const clerkDate = new Date('2025-07-15');
+  const daysLeft = Math.max(0, Math.ceil((clerkDate - today) / (1000 * 60 * 60 * 24)));
+
+  $('home-stats').innerHTML = [
+    { val: `${doneTasks}/${S.tasks.length}`, lbl: 'Tasks done', color: 'var(--accent)' },
+    { val: `${doneHabits}/${S.habits.length}`, lbl: 'Habits tracked', color: 'var(--accent4)' },
+    { val: daysLeft + 'd', lbl: 'Days to clerkship', color: 'var(--accent2)' },
+    { val: totalStudyH.toFixed(1) + 'h', lbl: 'Study hrs logged', color: 'var(--accent3)' },
+  ].map(s => `<div class="stat-card"><div class="stat-val" style="color:${s.color}">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
+
+  const pending = S.tasks.filter(t => !t.done).slice(0, 5);
+  $('home-tasks').innerHTML = pending.length
+    ? pending.map(t => `<div class="task-item"><div class="task-text">${t.text}</div><span class="badge badge-${CAT_COLORS[t.cat]||'blue'}">${t.cat}</span></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">✓</div>All caught up!</div>';
+
+  const events = S.events.slice().sort((a, b) => a.start.localeCompare(b.start)).slice(0, 5);
+  $('home-events').innerHTML = events.length
+    ? events.map(e => `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)"><span style="font-size:11.5px;color:var(--muted);font-family:var(--syne);font-weight:600;min-width:48px">${e.start}</span><span style="font-size:13.5px">${e.name}</span></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">📅</div>No events yet</div>';
+
+  const goal = S.studyWeekGoal || 20;
+  const pct = Math.min(100, Math.round((totalStudyH / goal) * 100));
+  $('home-study-goal-text').innerHTML = `<span>Study progress</span><span style="font-weight:600">${totalStudyH.toFixed(1)}h / ${goal}h goal</span>`;
+  $('home-study-bar').style.width = pct + '%';
+}
+
+// ══════════════════════════════════════
+// ROTATIONS
+// ══════════════════════════════════════
+function addRotation() {
+  const name = $('r-name').value.trim();
+  if (!name) { toast('Enter a rotation name'); return; }
+  S.rotations.push({ id: uid(), name, start: $('r-start').value, end: $('r-end').value, type: $('r-type').value });
+  $('r-name').value = '';
+  saveState(); closeModal('rot-modal'); renderRotations(); toast('Rotation added!');
+}
+function deleteRotation(id) {
+  S.rotations = S.rotations.filter(r => r.id !== id);
+  saveState(); renderRotations();
+}
+function addProc() {
+  const name = $('p-name').value.trim();
+  if (!name) { toast('Enter a procedure name'); return; }
+  S.procedures.push({ id: uid(), name, level: $('p-level').value, notes: $('p-notes').value, date: today.toLocaleDateString('en-PH') });
+  $('p-name').value = ''; $('p-notes').value = '';
+  saveState(); closeModal('proc-modal'); renderRotations(); toast('Procedure logged!');
+}
+function deleteProc(id) {
+  S.procedures = S.procedures.filter(p => p.id !== id);
+  saveState(); renderRotations();
+}
+
+function renderRotations() {
+  const cur = S.rotations[S.rotations.length - 1];
+  let weeks = '—', pct = 0;
+  if (cur && cur.start && cur.end) {
+    const s = new Date(cur.start), e = new Date(cur.end);
+    const totalW = Math.ceil((e - s) / (7 * 86400000));
+    const doneW = Math.max(0, Math.ceil((today - s) / (7 * 86400000)));
+    weeks = `${Math.min(doneW, totalW)} of ${totalW}`;
+    pct = Math.min(100, Math.round((doneW / totalW) * 100));
+  }
+  $('rot-stats').innerHTML = [
+    { val: cur ? cur.name : 'Not set', lbl: 'Current rotation', color: 'var(--accent)' },
+    { val: weeks, lbl: 'Weeks completed', color: 'var(--accent2)' },
+    { val: S.procedures.length, lbl: 'Procedures logged', color: 'var(--accent4)' },
+  ].map(s => `<div class="stat-card"><div class="stat-val" style="font-size:${s.val.length > 10 ? '16px' : '24px'};color:${s.color}">${s.val}</div><div class="stat-lbl">${s.lbl}</div>${s.lbl === 'Weeks completed' ? `<div class="progress-wrap" style="margin-top:10px"><div class="progress-fill" style="width:${pct}%;background:var(--accent2)"></div></div>` : ''}</div>`).join('');
+
+  const typeColors = { clin: 'var(--accent)', study: 'var(--accent2)', life: 'var(--warn)' };
+  $('rot-list').innerHTML = S.rotations.length
+    ? S.rotations.map(r => `<div class="rot-block" style="border-color:${typeColors[r.type]||'var(--accent)'}"><div><div class="rot-name">${r.name}</div><div class="rot-dates">${r.start || '—'} → ${r.end || '—'}</div></div><button class="del-btn" onclick="deleteRotation(${r.id})">×</button></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">🏥</div>No rotations added yet</div>';
+
+  $('proc-list').innerHTML = S.procedures.length
+    ? S.procedures.slice().reverse().map(p => `<div class="task-item"><div class="task-text"><strong>${p.name}</strong><div class="task-meta">${p.level} · ${p.date}${p.notes ? ' · ' + p.notes : ''}</div></div><span class="badge badge-teal" style="flex-shrink:0">${p.level.split(' ')[0]}</span><button class="del-btn" onclick="deleteProc(${p.id})">×</button></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">📝</div>No procedures logged yet</div>';
+}
+
+// ══════════════════════════════════════
+// STUDY
+// ══════════════════════════════════════
+function logStudy() {
+  const topic = $('s-topic').value.trim();
+  const hours = parseFloat($('s-hours').value);
+  if (!topic || !hours) { toast('Enter topic and hours'); return; }
+  const goal = parseInt($('s-week-goal').value);
+  if (goal) S.studyWeekGoal = goal;
+  S.studyLog.unshift({ id: uid(), topic, hours, type: $('s-type').value, date: today.toLocaleDateString('en-PH') });
+  $('s-topic').value = ''; $('s-hours').value = '';
+  saveState(); renderStudy(); renderHome && null; toast('Session logged!');
+}
+function deleteStudy(id) {
+  S.studyLog = S.studyLog.filter(s => s.id !== id);
+  saveState(); renderStudy();
+}
+
+function renderStudy() {
+  $('s-week-goal').placeholder = S.studyWeekGoal || 20;
+  const total = S.studyLog.reduce((a, s) => a + (parseFloat(s.hours) || 0), 0);
+  const byType = {};
+  S.studyLog.forEach(s => byType[s.type] = (byType[s.type] || 0) + parseFloat(s.hours));
+  const colors = { 'Lectures': 'var(--accent)', 'Anki': 'var(--accent4)', 'Question bank': 'var(--accent2)', 'Textbook reading': 'var(--warn)', 'Group study': 'var(--accent3)', 'Clinical review': '#1D9E75' };
+
+  $('study-breakdown').innerHTML = Object.keys(byType).length
+    ? Object.entries(byType).map(([t, h]) => `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>${t}</span><span style="font-weight:600">${h.toFixed(1)}h</span></div><div class="progress-wrap"><div class="progress-fill" style="width:${Math.round((h/total)*100)}%;background:${colors[t]||'var(--accent)'}"></div></div></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">📊</div>Log your first session</div>';
+
+  const goal = S.studyWeekGoal || 20;
+  const pct = Math.min(100, Math.round((total / goal) * 100));
+  $('study-goal-label').innerHTML = `<span>Progress</span><span style="font-weight:600">${total.toFixed(1)}h / ${goal}h</span>`;
+  $('study-goal-bar2').style.width = pct + '%';
+
+  $('study-log').innerHTML = S.studyLog.length
+    ? S.studyLog.map(s => `<div class="task-item"><div class="task-text"><strong>${s.topic}</strong> — ${s.hours}h<div class="task-meta">${s.type} · ${s.date}</div></div><button class="del-btn" onclick="deleteStudy(${s.id})">×</button></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">📖</div>No sessions logged yet</div>';
+}
+
+// ══════════════════════════════════════
+// EXAMS & GOALS
+// ══════════════════════════════════════
+function addExam() {
+  const name = $('ex-name').value.trim();
+  if (!name) { toast('Enter exam name'); return; }
+  S.exams.push({ id: uid(), name, date: $('ex-date').value, type: $('ex-type').value, target: $('ex-target').value });
+  $('ex-name').value = ''; $('ex-date').value = ''; $('ex-target').value = '';
+  saveState(); closeModal('exam-modal'); renderExams(); toast('Exam added!');
+}
+function deleteExam(id) { S.exams = S.exams.filter(e => e.id !== id); saveState(); renderExams(); }
+function addGoal() {
+  const text = $('goal-input').value.trim();
+  if (!text) return;
+  S.goals.push({ id: uid(), text, done: false });
+  $('goal-input').value = '';
+  saveState(); renderExams();
+}
+function toggleGoal(id) {
+  const g = S.goals.find(g => g.id === id);
+  if (g) g.done = !g.done;
+  saveState(); renderExams();
+}
+function deleteGoal(id) { S.goals = S.goals.filter(g => g.id !== id); saveState(); renderExams(); }
+
+function renderExams() {
+  const typeColors = { 'Shelf exam': 'blue', 'USMLE Step': 'purple', 'School exam': 'teal', Milestone: 'green', Other: 'amber' };
+  const sorted = S.exams.slice().sort((a, b) => (a.date || '9999') < (b.date || '9999') ? -1 : 1);
+  $('exam-list').innerHTML = sorted.length
+    ? sorted.map(e => {
+        const dl = daysUntil(e.date);
+        const urgency = dl !== null && dl < 14 ? 'var(--accent3)' : dl !== null && dl < 30 ? 'var(--warn)' : 'var(--accent)';
+        return `<div class="exam-item"><div><div class="exam-name">${e.name}</div><div class="exam-meta">${e.date || 'Date TBD'}${e.target ? ' · Target: ' + e.target : ''} <span class="badge badge-${typeColors[e.type]||'blue'}">${e.type}</span></div></div><div class="exam-right">${dl !== null ? `<span class="days-badge" style="color:${urgency}">${dl}d</span><div style="font-size:11px;color:var(--hint)">remaining</div>` : ''}<button class="del-btn" onclick="deleteExam(${e.id})" style="margin-top:4px">×</button></div></div>`;
+      }).join('')
+    : '<div class="empty"><div class="empty-icon">📋</div>No exams added yet</div>';
+
+  $('goals-list').innerHTML = S.goals.map(g => `<div class="task-item"><div class="task-check ${g.done ? 'done' : ''}" onclick="toggleGoal(${g.id})"></div><div class="task-text ${g.done ? 'done' : ''}">${g.text}</div><button class="del-btn" onclick="deleteGoal(${g.id})">×</button></div>`).join('');
+}
+
+// ══════════════════════════════════════
+// SCHEDULE
+// ══════════════════════════════════════
+function addEvent() {
+  const name = $('ev-name').value.trim();
+  if (!name) { toast('Enter an event name'); return; }
+  S.events.push({ id: uid(), name, start: $('ev-start').value, end: $('ev-end').value, type: $('ev-type').value });
+  $('ev-name').value = '';
+  saveState(); closeModal('event-modal'); renderSchedule(); toast('Event added!');
+}
+function quickAdd(name, start, end, type) {
+  S.events.push({ id: uid(), name, start, end, type });
+  saveState(); renderSchedule(); toast(name + ' added!');
+}
+function deleteEvent(id) { S.events = S.events.filter(e => e.id !== id); saveState(); renderSchedule(); }
+
+function renderSchedule() {
+  $('sched-date').textContent = today.toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const sorted = S.events.slice().sort((a, b) => a.start.localeCompare(b.start));
+  $('schedule-list').innerHTML = sorted.length
+    ? sorted.map(e => `<div class="schedule-block"><div class="sched-time">${e.start || '—'}</div><div class="sched-event ${e.type || 'study'}" style="flex:1;display:flex;justify-content:space-between;align-items:center"><span>${e.name}${e.end ? ' → ' + e.end : ''}</span><button class="del-btn" onclick="deleteEvent(${e.id})" style="background:none;color:inherit;opacity:.6">×</button></div></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">📅</div>No events yet — add quick blocks or a custom event</div>';
+}
+
+// ══════════════════════════════════════
+// TASKS
+// ══════════════════════════════════════
+function addTask() {
+  const text = $('task-input').value.trim();
+  if (!text) return;
+  S.tasks.unshift({ id: uid(), text, cat: $('task-cat').value, pri: $('task-pri').value, due: $('task-due').value, done: false });
+  $('task-input').value = ''; $('task-due').value = '';
+  saveState(); renderTasks(taskFilter);
+}
+function toggleTask(id) {
+  const t = S.tasks.find(t => t.id === id);
+  if (t) t.done = !t.done;
+  saveState(); renderTasks(taskFilter);
+}
+function deleteTask(id) { S.tasks = S.tasks.filter(t => t.id !== id); saveState(); renderTasks(taskFilter); }
+function filterTasks(f, el) {
+  taskFilter = f;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderTasks(f);
+}
+
+function renderTasks(filter) {
+  let tasks = S.tasks;
+  if (filter === 'med') tasks = tasks.filter(t => t.cat === 'med');
+  else if (filter === 'life') tasks = tasks.filter(t => t.cat === 'life');
+  else if (filter === 'personal') tasks = tasks.filter(t => t.cat === 'personal');
+
+  const priColors = { high: 'red', med: 'amber', low: 'green' };
+  const renderList = arr => arr.map(t => `
+    <div class="task-item">
+      <div class="task-check ${t.done ? 'done' : ''}" onclick="toggleTask(${t.id})"></div>
+      <div class="task-text ${t.done ? 'done' : ''}">${t.text}${t.due ? `<div class="task-meta">Due ${t.due}</div>` : ''}</div>
+      <div class="task-actions">
+        <span class="badge badge-${CAT_COLORS[t.cat]||'blue'}">${t.cat}</span>
+        <span class="badge badge-${priColors[t.pri]||'amber'}">${t.pri}</span>
+        <button class="del-btn" onclick="deleteTask(${t.id})">×</button>
+      </div>
+    </div>`).join('');
+
+  const pending = tasks.filter(t => !t.done);
+  const done = tasks.filter(t => t.done);
+  $('tasks-list').innerHTML = `
+    <div class="card"><div class="card-title">Pending (${pending.length})</div>${pending.length ? renderList(pending) : '<div class="empty"><div class="empty-icon">✓</div>Nothing pending here!</div>'}</div>
+    <div class="card"><div class="card-title">Completed (${done.length})</div>${done.length ? renderList(done) : '<div class="empty"><div class="empty-icon">🎯</div>Complete some tasks!</div>'}</div>`;
+}
+
+// ══════════════════════════════════════
+// HABITS
+// ══════════════════════════════════════
+function addHabit() {
+  const name = $('h-name').value.trim();
+  if (!name) { toast('Enter a habit name'); return; }
+  S.habits.push({ id: uid(), name, cat: $('h-cat').value, log: Array(7).fill(false) });
+  $('h-name').value = '';
+  saveState(); closeModal('habit-modal'); renderHabits(); toast('Habit added!');
+}
+function toggleHabitDot(hid, day) {
+  const h = S.habits.find(h => h.id === hid);
+  if (h) h.log[day] = !h.log[day];
+  saveState(); renderHabits();
+}
+function deleteHabit(id) { S.habits = S.habits.filter(h => h.id !== id); saveState(); renderHabits(); }
+
+function renderHabits() {
+  const catColors = { med: 'blue', health: 'green', life: 'amber' };
+  $('habits-list').innerHTML = S.habits.length
+    ? S.habits.map(h => {
+        const streak = h.log.filter(Boolean).length;
+        const dots = h.log.map((d, i) => `<div class="habit-dot ${d ? 'done' : ''}" onclick="toggleHabitDot(${h.id},${i})" title="${DAY_NAMES[i]}"></div>`).join('');
+        return `<div class="habit-card">
+          <div class="habit-header">
+            <div class="habit-name">${h.name} <span class="badge badge-${catColors[h.cat]||'blue'}">${h.cat}</span></div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:12px;color:var(--muted)">${streak}/7 this week</span>
+              <div class="progress-wrap" style="width:60px;margin:0"><div class="progress-fill" style="width:${Math.round(streak/7*100)}%;background:var(--accent)"></div></div>
+              <button class="del-btn" onclick="deleteHabit(${h.id})">×</button>
+            </div>
+          </div>
+          <div class="day-labels">${DAY_NAMES.map(d => `<div class="day-lbl">${d}</div>`).join('')}</div>
+          <div class="dot-grid">${dots}</div>
+        </div>`;
+      }).join('')
+    : '<div class="empty"><div class="empty-icon">💎</div>No habits yet — add your first one!</div>';
+}
+
+// ══════════════════════════════════════
+// WELLBEING
+// ══════════════════════════════════════
+function updWB(slider, labelId) {
+  $(labelId).textContent = slider.value + '/10';
+}
+function saveWB() {
+  const entry = {
+    date: today.toLocaleDateString('en-PH'), ts: Date.now(),
+    energy: parseInt($('e-slider').value),
+    stress: parseInt($('s-slider').value),
+    sleep: parseInt($('sl-slider').value),
+    mood: parseInt($('m-slider').value),
+  };
+  const existing = S.wellbeingLog.findIndex(w => w.date === entry.date);
+  if (existing >= 0) S.wellbeingLog[existing] = entry;
+  else S.wellbeingLog.push(entry);
+  saveState();
+}
+function saveJournal() {
+  const text = $('journal-text').value.trim();
+  if (!text) return;
+  S.journals.unshift({ id: uid(), text, date: today.toLocaleDateString('en-PH') });
+  $('journal-text').value = '';
+  saveState(); renderHealth(); toast('Entry saved ✓');
+}
+
+function renderHealth() {
+  // Load today's entry if it exists
+  const todayEntry = S.wellbeingLog.find(w => w.date === today.toLocaleDateString('en-PH'));
+  if (todayEntry) {
+    ['e','s','sl','m'].forEach((k, i) => {
+      const keys = ['energy','stress','sleep','mood'];
+      const sliders = ['e-slider','s-slider','sl-slider','m-slider'];
+      const labels = ['e-val','s-val','sl-val','m-val'];
+      $(sliders[i]).value = todayEntry[keys[i]];
+      $(labels[i]).textContent = todayEntry[keys[i]] + '/10';
+    });
+  }
+
+  $('care-tip').textContent = CARE_TIPS[today.getDate() % CARE_TIPS.length];
+
+  // History
+  const last7 = S.wellbeingLog.slice(-7);
+  $('wb-history').innerHTML = last7.length
+    ? last7.map(w => `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px"><span>${w.date}</span><span>E:${w.energy} S:${w.stress} Sleep:${w.sleep} Mood:${w.mood}</span></div><div class="progress-wrap"><div class="progress-fill" style="width:${Math.round((w.energy/10)*100)}%;background:var(--accent)"></div></div></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">📊</div>Do a check-in above to see trends</div>';
+
+  $('journal-list').innerHTML = S.journals.slice(0, 5).map(j => `<div style="padding:8px;background:var(--bg);border-radius:var(--radius);margin-bottom:6px"><div style="font-size:11px;color:var(--hint);margin-bottom:4px">${j.date}</div><div style="font-size:13px;line-height:1.6;color:var(--text)">${j.text.substring(0, 120)}${j.text.length > 120 ? '...' : ''}</div></div>`).join('');
+}
+
+// ══════════════════════════════════════
+// FINANCE
+// ══════════════════════════════════════
+function setIncome() {
+  S.income = parseFloat($('income-input').value) || 0;
+  $('income-input').value = '';
+  saveState(); renderFinance(); toast('Income set!');
+}
+function addExpense() {
+  const name = $('exp-name').value.trim();
+  const amount = parseFloat($('exp-amt').value);
+  if (!name || !amount) { toast('Enter description and amount'); return; }
+  S.expenses.unshift({ id: uid(), name, amount, cat: $('exp-cat').value, date: today.toLocaleDateString('en-PH') });
+  $('exp-name').value = ''; $('exp-amt').value = '';
+  saveState(); renderFinance(); toast('Expense added!');
+}
+function deleteExpense(id) { S.expenses = S.expenses.filter(e => e.id !== id); saveState(); renderFinance(); }
+
+function renderFinance() {
+  const spent = S.expenses.reduce((a, e) => a + e.amount, 0);
+  const left = S.income - spent;
+  $('fin-stats').innerHTML = [
+    { val: formatCurrency(S.income), lbl: 'Monthly allowance', color: 'var(--accent)' },
+    { val: formatCurrency(spent), lbl: 'Total spent', color: 'var(--accent3)' },
+    { val: formatCurrency(left), lbl: 'Remaining', color: left >= 0 ? 'var(--accent)' : 'var(--accent3)' },
+  ].map(s => `<div class="stat-card"><div class="stat-val" style="font-size:20px;color:${s.color}">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
+
+  $('expense-list').innerHTML = S.expenses.length
+    ? S.expenses.map(e => `<div class="expense-row"><div class="expense-info"><div class="cat-dot" style="background:${EXP_COLORS[e.cat]||'#888'}"></div><div><div class="expense-name">${e.name}</div><div class="expense-cat">${e.cat} · ${e.date}</div></div></div><div style="display:flex;align-items:center;gap:8px"><div class="expense-amt">-${formatCurrency(e.amount)}</div><button class="del-btn" onclick="deleteExpense(${e.id})">×</button></div></div>`).join('')
+    : '<div class="empty"><div class="empty-icon">💸</div>No expenses logged yet</div>';
+}
+
+// ══════════════════════════════════════
+// SERVICE WORKER REGISTRATION (PWA)
+// ══════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(registration => {
+        console.log('Service Worker registered successfully');
+      })
+      .catch(error => {
+        console.log('Service Worker registration failed:', error);
+      });
+  });
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  renderHome();
+  // load defaults for study goal input
+  $('s-week-goal').value = S.studyWeekGoal || 20;
+  // Set income input placeholder
+  if (S.income) $('income-input').placeholder = S.income;
+  // Keyboard shortcut: Escape closes modals
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  });
+});
+</script>
+</body>
+</html>
