@@ -7,8 +7,8 @@
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#f4f2ec">
-<link rel="icon" type="image/png" href="dashy.png">
-<link rel="apple-touch-icon" href="dashy.png">
+<link rel="icon" type="image/png" href="image_8687e7.png">
+<link rel="apple-touch-icon" href="image_8687e7.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -120,8 +120,9 @@ body {
   background: transparent;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
-.logo-mark img { width: 100%; height: 100%; object-fit: contain; }
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; }
 .nav-section {
   font-size: 10px; font-family: var(--syne); font-weight: 700;
   letter-spacing: .1em; text-transform: uppercase;
@@ -468,6 +469,10 @@ input[type=range]::-moz-range-thumb {
   .main-content { padding: 0; }
   .page { display: block !important; margin-bottom: 2rem; }
 }
+
+/* Sync Box */
+.sync-instructions { font-size: 13.5px; line-height: 1.6; color: var(--muted); margin-bottom: 1.5rem; background: var(--accent4-light); padding: 1rem; border-radius: var(--radius); border-left: 4px solid var(--accent4); }
+.sync-instructions strong { color: var(--text); }
 </style>
 </head>
 <body>
@@ -477,7 +482,7 @@ input[type=range]::-moz-range-thumb {
 <nav class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="logo-mark">
-        <img src="dashy.png" alt="MedLife Logo">
+        <img src="image_8687e7.png" alt="MedLife Logo">
       </div>
       MedLife HQ
     </div>
@@ -498,6 +503,9 @@ input[type=range]::-moz-range-thumb {
     <div class="nav-item" data-page="health" onclick="goTo('health',this)"><span class="nav-icon">❤️</span>Wellbeing</div>
     <div class="nav-item" data-page="finance" onclick="goTo('finance',this)"><span class="nav-icon">💰</span>Budget</div>
 
+    <div class="nav-section">Settings</div>
+    <div class="nav-item" data-page="sync" onclick="goTo('sync',this)"><span class="nav-icon">☁️</span>Cloud Sync</div>
+
     <div class="nav-spacer"></div>
     <div class="sidebar-footer">Data saved locally on your device</div>
   </nav>
@@ -513,7 +521,7 @@ input[type=range]::-moz-range-thumb {
 <main class="main-content">
 
     
-<div class="page active" id="page-home">
+    <div class="page active" id="page-home">
       <div class="page-header">
         <div class="page-title">Good <span id="greeting-time">morning</span> 👋</div>
         <div class="page-sub" id="home-quote">You're going to be an incredible doctor.</div>
@@ -541,7 +549,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-rotations">
+    <div class="page" id="page-rotations">
       <div class="page-header">
         <div class="page-title">Clinical Rotations</div>
         <div class="page-sub">3rd year clerkship tracker</div>
@@ -560,7 +568,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-study">
+    <div class="page" id="page-study">
       <div class="page-header">
         <div class="page-title">Study Planner</div>
         <div class="page-sub">Log sessions · track progress · stay consistent</div>
@@ -595,7 +603,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-exams">
+    <div class="page" id="page-exams">
       <div class="page-header">
         <div class="page-title">Exams & Goals</div>
         <div class="page-sub">USMLE · shelf exams · milestones</div>
@@ -616,7 +624,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-schedule">
+    <div class="page" id="page-schedule">
       <div class="page-header">
         <div class="page-title">Today's Schedule</div>
         <div class="page-sub" id="sched-date"></div>
@@ -641,7 +649,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-tasks">
+    <div class="page" id="page-tasks">
       <div class="page-header">
         <div class="page-title">Tasks</div>
         <div class="page-sub">All your to-dos in one place</div>
@@ -665,7 +673,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-habits">
+    <div class="page" id="page-habits">
       <div class="page-header">
         <div class="page-title">Habit Tracker</div>
         <div class="page-sub">7-day view · build consistency</div>
@@ -675,7 +683,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-health">
+    <div class="page" id="page-health">
       <div class="page-header">
         <div class="page-title">Wellbeing</div>
         <div class="page-sub">You can't pour from an empty cup</div>
@@ -709,7 +717,7 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     
-<div class="page" id="page-finance">
+    <div class="page" id="page-finance">
       <div class="page-header">
         <div class="page-title">Budget Tracker</div>
         <div class="page-sub">Every peso counts</div>
@@ -735,6 +743,40 @@ input[type=range]::-moz-range-thumb {
         <div class="card">
           <div class="card-title">Expenses this month</div>
           <div id="expense-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-sync">
+      <div class="page-header">
+        <div class="page-title">Cloud Sync ☁️</div>
+        <div class="page-sub">Keep your data updated across your laptop and phone</div>
+      </div>
+
+      <div class="sync-instructions">
+        <strong>How to sync for free:</strong><br><br>
+        1. Go to <a href="https://jsonbin.io/" target="_blank" style="color:var(--accent)">JSONBin.io</a> and create a free account.<br>
+        2. Click "Create Bin" on their website, add `{}` in the text box, and save it. Copy the <strong>Bin ID</strong> from the URL.<br>
+        3. Go to API Keys in JSONBin and create a new <strong>Master Key</strong>.<br>
+        4. Paste both here. When you change data on your laptop, click <strong>Upload</strong>. Open your phone and click <strong>Download</strong>!
+      </div>
+
+      <div class="card">
+        <div class="card-title">Your Sync Credentials</div>
+        <div class="form-group">
+          <label>JSONBin Master Key (Starts with $2a$)</label>
+          <input type="text" id="sync-key" placeholder="Paste your Master API Key here">
+        </div>
+        <div class="form-group">
+          <label>Bin ID</label>
+          <input type="text" id="sync-bin" placeholder="Paste your Bin ID here">
+        </div>
+        <button class="btn btn-secondary" onclick="saveSyncConfig()" style="margin-bottom: 1.5rem;">💾 Save Credentials</button>
+        
+        <div class="card-title">Sync Data</div>
+        <div class="grid-2">
+          <button class="btn btn-primary" id="btn-upload" onclick="uploadToCloud()" style="justify-content:center;">☁️ Upload to Cloud</button>
+          <button class="btn btn-secondary" id="btn-download" onclick="downloadFromCloud()" style="justify-content:center; border-color: var(--accent4); color: var(--accent4);">⬇️ Download from Cloud</button>
         </div>
       </div>
     </div>
@@ -1071,311 +1113,4 @@ function renderRotations() {
     : '<div class="empty"><div class="empty-icon">🏥</div>No rotations added yet</div>';
 
   $('proc-list').innerHTML = S.procedures.length
-    ? S.procedures.slice().reverse().map(p => `<div class="task-item"><div class="task-text"><strong>${p.name}</strong><div class="task-meta">${p.level} · ${p.date}${p.notes ? ' · ' + p.notes : ''}</div></div><span class="badge badge-teal" style="flex-shrink:0">${p.level.split(' ')[0]}</span><button class="del-btn" onclick="deleteProc(${p.id})">×</button></div>`).join('')
-    : '<div class="empty"><div class="empty-icon">📝</div>No procedures logged yet</div>';
-}
-
-// ══════════════════════════════════════
-// STUDY
-// ══════════════════════════════════════
-function logStudy() {
-  const topic = $('s-topic').value.trim();
-  const hours = parseFloat($('s-hours').value);
-  if (!topic || !hours) { toast('Enter topic and hours'); return; }
-  const goal = parseInt($('s-week-goal').value);
-  if (goal) S.studyWeekGoal = goal;
-  S.studyLog.unshift({ id: uid(), topic, hours, type: $('s-type').value, date: today.toLocaleDateString('en-PH') });
-  $('s-topic').value = ''; $('s-hours').value = '';
-  saveState(); renderStudy(); renderHome && null; toast('Session logged!');
-}
-function deleteStudy(id) {
-  S.studyLog = S.studyLog.filter(s => s.id !== id);
-  saveState(); renderStudy();
-}
-
-function renderStudy() {
-  $('s-week-goal').placeholder = S.studyWeekGoal || 20;
-  const total = S.studyLog.reduce((a, s) => a + (parseFloat(s.hours) || 0), 0);
-  const byType = {};
-  S.studyLog.forEach(s => byType[s.type] = (byType[s.type] || 0) + parseFloat(s.hours));
-  const colors = { 'Lectures': 'var(--accent)', 'Anki': 'var(--accent4)', 'Question bank': 'var(--accent2)', 'Textbook reading': 'var(--warn)', 'Group study': 'var(--accent3)', 'Clinical review': '#1D9E75' };
-
-  $('study-breakdown').innerHTML = Object.keys(byType).length
-    ? Object.entries(byType).map(([t, h]) => `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>${t}</span><span style="font-weight:600">${h.toFixed(1)}h</span></div><div class="progress-wrap"><div class="progress-fill" style="width:${Math.round((h/total)*100)}%;background:${colors[t]||'var(--accent)'}"></div></div></div>`).join('')
-    : '<div class="empty"><div class="empty-icon">📊</div>Log your first session</div>';
-
-  const goal = S.studyWeekGoal || 20;
-  const pct = Math.min(100, Math.round((total / goal) * 100));
-  $('study-goal-label').innerHTML = `<span>Progress</span><span style="font-weight:600">${total.toFixed(1)}h / ${goal}h</span>`;
-  $('study-goal-bar2').style.width = pct + '%';
-
-  $('study-log').innerHTML = S.studyLog.length
-    ? S.studyLog.map(s => `<div class="task-item"><div class="task-text"><strong>${s.topic}</strong> — ${s.hours}h<div class="task-meta">${s.type} · ${s.date}</div></div><button class="del-btn" onclick="deleteStudy(${s.id})">×</button></div>`).join('')
-    : '<div class="empty"><div class="empty-icon">📖</div>No sessions logged yet</div>';
-}
-
-// ══════════════════════════════════════
-// EXAMS & GOALS
-// ══════════════════════════════════════
-function addExam() {
-  const name = $('ex-name').value.trim();
-  if (!name) { toast('Enter exam name'); return; }
-  S.exams.push({ id: uid(), name, date: $('ex-date').value, type: $('ex-type').value, target: $('ex-target').value });
-  $('ex-name').value = ''; $('ex-date').value = ''; $('ex-target').value = '';
-  saveState(); closeModal('exam-modal'); renderExams(); toast('Exam added!');
-}
-function deleteExam(id) { S.exams = S.exams.filter(e => e.id !== id); saveState(); renderExams(); }
-function addGoal() {
-  const text = $('goal-input').value.trim();
-  if (!text) return;
-  S.goals.push({ id: uid(), text, done: false });
-  $('goal-input').value = '';
-  saveState(); renderExams();
-}
-function toggleGoal(id) {
-  const g = S.goals.find(g => g.id === id);
-  if (g) g.done = !g.done;
-  saveState(); renderExams();
-}
-function deleteGoal(id) { S.goals = S.goals.filter(g => g.id !== id); saveState(); renderExams(); }
-
-function renderExams() {
-  const typeColors = { 'Shelf exam': 'blue', 'USMLE Step': 'purple', 'School exam': 'teal', Milestone: 'green', Other: 'amber' };
-  const sorted = S.exams.slice().sort((a, b) => (a.date || '9999') < (b.date || '9999') ? -1 : 1);
-  $('exam-list').innerHTML = sorted.length
-    ? sorted.map(e => {
-        const dl = daysUntil(e.date);
-        const urgency = dl !== null && dl < 14 ? 'var(--accent3)' : dl !== null && dl < 30 ? 'var(--warn)' : 'var(--accent)';
-        return `<div class="exam-item"><div><div class="exam-name">${e.name}</div><div class="exam-meta">${e.date || 'Date TBD'}${e.target ? ' · Target: ' + e.target : ''} <span class="badge badge-${typeColors[e.type]||'blue'}">${e.type}</span></div></div><div class="exam-right">${dl !== null ? `<span class="days-badge" style="color:${urgency}">${dl}d</span><div style="font-size:11px;color:var(--hint)">remaining</div>` : ''}<button class="del-btn" onclick="deleteExam(${e.id})" style="margin-top:4px">×</button></div></div>`;
-      }).join('')
-    : '<div class="empty"><div class="empty-icon">📋</div>No exams added yet</div>';
-
-  $('goals-list').innerHTML = S.goals.map(g => `<div class="task-item"><div class="task-check ${g.done ? 'done' : ''}" onclick="toggleGoal(${g.id})"></div><div class="task-text ${g.done ? 'done' : ''}">${g.text}</div><button class="del-btn" onclick="deleteGoal(${g.id})">×</button></div>`).join('');
-}
-
-// ══════════════════════════════════════
-// SCHEDULE
-// ══════════════════════════════════════
-function addEvent() {
-  const name = $('ev-name').value.trim();
-  if (!name) { toast('Enter an event name'); return; }
-  S.events.push({ id: uid(), name, start: $('ev-start').value, end: $('ev-end').value, type: $('ev-type').value });
-  $('ev-name').value = '';
-  saveState(); closeModal('event-modal'); renderSchedule(); toast('Event added!');
-}
-function quickAdd(name, start, end, type) {
-  S.events.push({ id: uid(), name, start, end, type });
-  saveState(); renderSchedule(); toast(name + ' added!');
-}
-function deleteEvent(id) { S.events = S.events.filter(e => e.id !== id); saveState(); renderSchedule(); }
-
-function renderSchedule() {
-  $('sched-date').textContent = today.toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  const sorted = S.events.slice().sort((a, b) => a.start.localeCompare(b.start));
-  $('schedule-list').innerHTML = sorted.length
-    ? sorted.map(e => `<div class="schedule-block"><div class="sched-time">${e.start || '—'}</div><div class="sched-event ${e.type || 'study'}" style="flex:1;display:flex;justify-content:space-between;align-items:center"><span>${e.name}${e.end ? ' → ' + e.end : ''}</span><button class="del-btn" onclick="deleteEvent(${e.id})" style="background:none;color:inherit;opacity:.6">×</button></div></div>`).join('')
-    : '<div class="empty"><div class="empty-icon">📅</div>No events yet — add quick blocks or a custom event</div>';
-}
-
-// ══════════════════════════════════════
-// TASKS
-// ══════════════════════════════════════
-function addTask() {
-  const text = $('task-input').value.trim();
-  if (!text) return;
-  S.tasks.unshift({ id: uid(), text, cat: $('task-cat').value, pri: $('task-pri').value, due: $('task-due').value, done: false });
-  $('task-input').value = ''; $('task-due').value = '';
-  saveState(); renderTasks(taskFilter);
-}
-function toggleTask(id) {
-  const t = S.tasks.find(t => t.id === id);
-  if (t) t.done = !t.done;
-  saveState(); renderTasks(taskFilter);
-}
-function deleteTask(id) { S.tasks = S.tasks.filter(t => t.id !== id); saveState(); renderTasks(taskFilter); }
-function filterTasks(f, el) {
-  taskFilter = f;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  if (el) el.classList.add('active');
-  renderTasks(f);
-}
-
-function renderTasks(filter) {
-  let tasks = S.tasks;
-  if (filter === 'med') tasks = tasks.filter(t => t.cat === 'med');
-  else if (filter === 'life') tasks = tasks.filter(t => t.cat === 'life');
-  else if (filter === 'personal') tasks = tasks.filter(t => t.cat === 'personal');
-
-  const priColors = { high: 'red', med: 'amber', low: 'green' };
-  const renderList = arr => arr.map(t => `
-    <div class="task-item">
-      <div class="task-check ${t.done ? 'done' : ''}" onclick="toggleTask(${t.id})"></div>
-      <div class="task-text ${t.done ? 'done' : ''}">${t.text}${t.due ? `<div class="task-meta">Due ${t.due}</div>` : ''}</div>
-      <div class="task-actions">
-        <span class="badge badge-${CAT_COLORS[t.cat]||'blue'}">${t.cat}</span>
-        <span class="badge badge-${priColors[t.pri]||'amber'}">${t.pri}</span>
-        <button class="del-btn" onclick="deleteTask(${t.id})">×</button>
-      </div>
-    </div>`).join('');
-
-  const pending = tasks.filter(t => !t.done);
-  const done = tasks.filter(t => t.done);
-  $('tasks-list').innerHTML = `
-    <div class="card"><div class="card-title">Pending (${pending.length})</div>${pending.length ? renderList(pending) : '<div class="empty"><div class="empty-icon">✓</div>Nothing pending here!</div>'}</div>
-    <div class="card"><div class="card-title">Completed (${done.length})</div>${done.length ? renderList(done) : '<div class="empty"><div class="empty-icon">🎯</div>Complete some tasks!</div>'}</div>`;
-}
-
-// ══════════════════════════════════════
-// HABITS
-// ══════════════════════════════════════
-function addHabit() {
-  const name = $('h-name').value.trim();
-  if (!name) { toast('Enter a habit name'); return; }
-  S.habits.push({ id: uid(), name, cat: $('h-cat').value, log: Array(7).fill(false) });
-  $('h-name').value = '';
-  saveState(); closeModal('habit-modal'); renderHabits(); toast('Habit added!');
-}
-function toggleHabitDot(hid, day) {
-  const h = S.habits.find(h => h.id === hid);
-  if (h) h.log[day] = !h.log[day];
-  saveState(); renderHabits();
-}
-function deleteHabit(id) { S.habits = S.habits.filter(h => h.id !== id); saveState(); renderHabits(); }
-
-function renderHabits() {
-  const catColors = { med: 'blue', health: 'green', life: 'amber' };
-  $('habits-list').innerHTML = S.habits.length
-    ? S.habits.map(h => {
-        const streak = h.log.filter(Boolean).length;
-        const dots = h.log.map((d, i) => `<div class="habit-dot ${d ? 'done' : ''}" onclick="toggleHabitDot(${h.id},${i})" title="${DAY_NAMES[i]}"></div>`).join('');
-        return `<div class="habit-card">
-          <div class="habit-header">
-            <div class="habit-name">${h.name} <span class="badge badge-${catColors[h.cat]||'blue'}">${h.cat}</span></div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <span style="font-size:12px;color:var(--muted)">${streak}/7 this week</span>
-              <div class="progress-wrap" style="width:60px;margin:0"><div class="progress-fill" style="width:${Math.round(streak/7*100)}%;background:var(--accent)"></div></div>
-              <button class="del-btn" onclick="deleteHabit(${h.id})">×</button>
-            </div>
-          </div>
-          <div class="day-labels">${DAY_NAMES.map(d => `<div class="day-lbl">${d}</div>`).join('')}</div>
-          <div class="dot-grid">${dots}</div>
-        </div>`;
-      }).join('')
-    : '<div class="empty"><div class="empty-icon">💎</div>No habits yet — add your first one!</div>';
-}
-
-// ══════════════════════════════════════
-// WELLBEING
-// ══════════════════════════════════════
-function updWB(slider, labelId) {
-  $(labelId).textContent = slider.value + '/10';
-}
-function saveWB() {
-  const entry = {
-    date: today.toLocaleDateString('en-PH'), ts: Date.now(),
-    energy: parseInt($('e-slider').value),
-    stress: parseInt($('s-slider').value),
-    sleep: parseInt($('sl-slider').value),
-    mood: parseInt($('m-slider').value),
-  };
-  const existing = S.wellbeingLog.findIndex(w => w.date === entry.date);
-  if (existing >= 0) S.wellbeingLog[existing] = entry;
-  else S.wellbeingLog.push(entry);
-  saveState();
-}
-function saveJournal() {
-  const text = $('journal-text').value.trim();
-  if (!text) return;
-  S.journals.unshift({ id: uid(), text, date: today.toLocaleDateString('en-PH') });
-  $('journal-text').value = '';
-  saveState(); renderHealth(); toast('Entry saved ✓');
-}
-
-function renderHealth() {
-  // Load today's entry if it exists
-  const todayEntry = S.wellbeingLog.find(w => w.date === today.toLocaleDateString('en-PH'));
-  if (todayEntry) {
-    ['e','s','sl','m'].forEach((k, i) => {
-      const keys = ['energy','stress','sleep','mood'];
-      const sliders = ['e-slider','s-slider','sl-slider','m-slider'];
-      const labels = ['e-val','s-val','sl-val','m-val'];
-      $(sliders[i]).value = todayEntry[keys[i]];
-      $(labels[i]).textContent = todayEntry[keys[i]] + '/10';
-    });
-  }
-
-  $('care-tip').textContent = CARE_TIPS[today.getDate() % CARE_TIPS.length];
-
-  // History
-  const last7 = S.wellbeingLog.slice(-7);
-  $('wb-history').innerHTML = last7.length
-    ? last7.map(w => `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px"><span>${w.date}</span><span>E:${w.energy} S:${w.stress} Sleep:${w.sleep} Mood:${w.mood}</span></div><div class="progress-wrap"><div class="progress-fill" style="width:${Math.round((w.energy/10)*100)}%;background:var(--accent)"></div></div></div>`).join('')
-    : '<div class="empty"><div class="empty-icon">📊</div>Do a check-in above to see trends</div>';
-
-  $('journal-list').innerHTML = S.journals.slice(0, 5).map(j => `<div style="padding:8px;background:var(--bg);border-radius:var(--radius);margin-bottom:6px"><div style="font-size:11px;color:var(--hint);margin-bottom:4px">${j.date}</div><div style="font-size:13px;line-height:1.6;color:var(--text)">${j.text.substring(0, 120)}${j.text.length > 120 ? '...' : ''}</div></div>`).join('');
-}
-
-// ══════════════════════════════════════
-// FINANCE
-// ══════════════════════════════════════
-function setIncome() {
-  S.income = parseFloat($('income-input').value) || 0;
-  $('income-input').value = '';
-  saveState(); renderFinance(); toast('Income set!');
-}
-function addExpense() {
-  const name = $('exp-name').value.trim();
-  const amount = parseFloat($('exp-amt').value);
-  if (!name || !amount) { toast('Enter description and amount'); return; }
-  S.expenses.unshift({ id: uid(), name, amount, cat: $('exp-cat').value, date: today.toLocaleDateString('en-PH') });
-  $('exp-name').value = ''; $('exp-amt').value = '';
-  saveState(); renderFinance(); toast('Expense added!');
-}
-function deleteExpense(id) { S.expenses = S.expenses.filter(e => e.id !== id); saveState(); renderFinance(); }
-
-function renderFinance() {
-  const spent = S.expenses.reduce((a, e) => a + e.amount, 0);
-  const left = S.income - spent;
-  $('fin-stats').innerHTML = [
-    { val: formatCurrency(S.income), lbl: 'Monthly allowance', color: 'var(--accent)' },
-    { val: formatCurrency(spent), lbl: 'Total spent', color: 'var(--accent3)' },
-    { val: formatCurrency(left), lbl: 'Remaining', color: left >= 0 ? 'var(--accent)' : 'var(--accent3)' },
-  ].map(s => `<div class="stat-card"><div class="stat-val" style="font-size:20px;color:${s.color}">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
-
-  $('expense-list').innerHTML = S.expenses.length
-    ? S.expenses.map(e => `<div class="expense-row"><div class="expense-info"><div class="cat-dot" style="background:${EXP_COLORS[e.cat]||'#888'}"></div><div><div class="expense-name">${e.name}</div><div class="expense-cat">${e.cat} · ${e.date}</div></div></div><div style="display:flex;align-items:center;gap:8px"><div class="expense-amt">-${formatCurrency(e.amount)}</div><button class="del-btn" onclick="deleteExpense(${e.id})">×</button></div></div>`).join('')
-    : '<div class="empty"><div class="empty-icon">💸</div>No expenses logged yet</div>';
-}
-
-// ══════════════════════════════════════
-// SERVICE WORKER REGISTRATION (PWA)
-// ══════════════════════════════════════
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then(registration => {
-        console.log('Service Worker registered successfully');
-      })
-      .catch(error => {
-        console.log('Service Worker registration failed:', error);
-      });
-  });
-}
-
-// ══════════════════════════════════════
-// INIT
-// ══════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  renderHome();
-  // load defaults for study goal input
-  $('s-week-goal').value = S.studyWeekGoal || 20;
-  // Set income input placeholder
-  if (S.income) $('income-input').placeholder = S.income;
-  // Keyboard shortcut: Escape closes modals
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
-  });
-});
-</script>
-</body>
-</html>
+    ?
